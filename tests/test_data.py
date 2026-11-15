@@ -60,11 +60,14 @@ def test_invalid_timestamp(payload: dict[str, object], stamp: object) -> None:
         parse_data({**payload, "datelong": stamp})
 
 
-@pytest.mark.parametrize("status", [123, True, [], "x" * 256])
+@pytest.mark.parametrize(
+    "status", [None, 123, True, [], {}, "", "unexpected", "x" * 256]
+)
 def test_invalid_status(payload: dict[str, object], status: object) -> None:
-    """Reject invalid status types and values too long for a sensor state."""
-    with pytest.raises(ValueError, match="Invalid capacityStatus"):
-        parse_data({**payload, "capacityStatus": status})
+    """Keep occupancy valid when the capacity status cannot be interpreted."""
+    result = parse_data({**payload, "capacityStatus": status})
+    assert result["capacityStatus"] is None
+    assert result["occupancy"] == 555
 
 
 def test_negative_occupancy(payload: dict[str, object]) -> None:
@@ -77,3 +80,9 @@ def test_invalid_payload(payload: object) -> None:
     """Reject non-object JSON responses."""
     with pytest.raises(ValueError, match="Expected a JSON object"):
         parse_data(payload)
+
+
+@pytest.mark.parametrize("status", ["good", "near", "over"])
+def test_recognized_status(payload: dict[str, object], status: str) -> None:
+    """Preserve recognized API states for existing automations."""
+    assert parse_data({**payload, "capacityStatus": status})["capacityStatus"] == status

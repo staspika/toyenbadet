@@ -12,7 +12,7 @@ from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, SHOP_NO, URL
+from .const import CAPACITY_STATUSES, DOMAIN, SHOP_NO, URL
 from .coordinator import ToyenbadetConfigEntry, ToyenbadetCoordinator
 from .data import MonitorValue
 
@@ -39,7 +39,12 @@ SENSORS = (
         icon="mdi:logout",
         native_unit_of_measurement="people",
     ),
-    SensorEntityDescription(key="capacityStatus", translation_key="capacity_status"),
+    SensorEntityDescription(
+        key="capacityStatus",
+        translation_key="capacity_status",
+        device_class=SensorDeviceClass.ENUM,
+        options=list(CAPACITY_STATUSES),
+    ),
     SensorEntityDescription(
         key="yearVisitors",
         translation_key="year_visitors",

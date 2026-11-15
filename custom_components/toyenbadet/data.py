@@ -2,6 +2,8 @@
 
 from datetime import UTC, datetime
 
+from .const import CAPACITY_STATUSES
+
 COUNTERS = (
     "visitorsIn",
     "visitorsOut",
@@ -44,9 +46,9 @@ def parse_data(payload: object) -> MonitorData:
         result[key] = _parse_counter(payload, key, required=False)
 
     status = payload.get("capacityStatus")
-    if status is not None and (not isinstance(status, str) or len(status) > 255):
-        raise ValueError("Invalid capacityStatus")
-    result["capacityStatus"] = status
+    result["capacityStatus"] = (
+        status if isinstance(status, str) and status in CAPACITY_STATUSES else None
+    )
 
     stamp = payload.get("datelong")
     timestamp = None
