@@ -1,0 +1,14 @@
+title: Tøyenbadet development
+views:
+  - title: Tøyenbadet
+    path: toyenbadet
+    cards:
+      - type: entities
+        title: Visitor monitor
+        show_header_toggle: false
+        entities:
+          - sensor.toyenbadet_occupancy
+          - sensor.toyenbadet_capacity_status
+          - sensor.toyenbadet_visitors_in
+          - sensor.toyenbadet_visitors_out
+          - sensor.toyenbadet_response_timestamp
