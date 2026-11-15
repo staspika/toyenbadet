@@ -2,6 +2,7 @@
 
 import logging
 from datetime import timedelta
+from typing import TYPE_CHECKING
 
 from aiohttp import ClientError, ClientTimeout
 
@@ -12,6 +13,9 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import DOMAIN, SHOP_NO, URL
 from .data import MonitorData, parse_data
+
+if TYPE_CHECKING:
+    from .hours_coordinator import OpeningHoursCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,6 +40,7 @@ class ToyenbadetCoordinator(DataUpdateCoordinator[MonitorData]):
     """Keep the device sensors synchronized and mark failures unavailable."""
 
     config_entry: ToyenbadetConfigEntry
+    hours: OpeningHoursCoordinator
 
     def __init__(self, hass: HomeAssistant, entry: ToyenbadetConfigEntry) -> None:
         """Initialize the shared polling coordinator."""

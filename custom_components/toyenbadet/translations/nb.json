@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "Tøyenbadet",
-        "description": "Legg til besøksmonitoren for Tøyenbadet (sted 12). Alle sensorer deler én forespørsel per minutt. Ingen innlogging er nødvendig."
+        "description": "Legg til besøkstall og åpningstider for billettsalg på Tøyenbadet. Besøkstall hentes hvert minutt, åpningstider hver time. Ingen innlogging kreves."
       }
     },
     "error": {
@@ -44,6 +44,22 @@
       },
       "total_filtered_records": {
         "name": "Antall filtrerte poster"
+      },
+      "next_opening": {
+        "name": "Neste åpning av billettsalg"
+      },
+      "next_closing": {
+        "name": "Neste stenging av billettsalg"
+      }
+    },
+    "calendar": {
+      "opening_hours": {
+        "name": "Åpningstider for billettsalg"
+      }
+    },
+    "binary_sensor": {
+      "ticket_sales_open": {
+        "name": "Billettsalg åpent"
       }
     }
   }
