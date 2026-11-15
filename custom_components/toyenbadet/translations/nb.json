@@ -1,0 +1,45 @@
+{
+  "title": "Tøyenbadet",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Tøyenbadet",
+        "description": "Legg til besøksmonitoren for Tøyenbadet (sted 12). Alle sensorer deler én forespørsel per minutt. Ingen innlogging er nødvendig."
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke lese besøksmonitoren. Sjekk internettforbindelsen og prøv igjen."
+    },
+    "abort": {
+      "already_configured": "Tøyenbadet er allerede konfigurert."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "occupancy": {
+        "name": "Antall til stede"
+      },
+      "visitors_in": {
+        "name": "Besøkende inn"
+      },
+      "visitors_out": {
+        "name": "Besøkende ut"
+      },
+      "capacity_status": {
+        "name": "Kapasitetsstatus"
+      },
+      "year_visitors": {
+        "name": "Besøkende i år"
+      },
+      "response_timestamp": {
+        "name": "Svartidspunkt"
+      },
+      "total_records": {
+        "name": "Antall poster"
+      },
+      "total_filtered_records": {
+        "name": "Antall filtrerte poster"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "toyenbadet",
+  "name": "Tøyenbadet",
+  "codeowners": [
+    "@staspika"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/staspika/toyenbadet",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}

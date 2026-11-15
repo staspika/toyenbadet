@@ -1,0 +1,31 @@
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+extend-exclude = ["toyenbadet-home-assistant"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "D", "ANN"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["homeassistant", "custom_components"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN401"]
+"custom_components/toyenbadet/config_flow.py" = ["ANN401"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-p no:respx"
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+follow_imports = "silent"
+files = ["custom_components/toyenbadet"]
+

@@ -1,0 +1,45 @@
+{
+  "title": "Tøyenbadet",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Tøyenbadet",
+        "description": "Add the Tøyenbadet visitor monitor (location 12). All sensors share one request per minute. No credentials are required."
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not read the visitor monitor. Check your internet connection and try again."
+    },
+    "abort": {
+      "already_configured": "Tøyenbadet is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "occupancy": {
+        "name": "Occupancy"
+      },
+      "visitors_in": {
+        "name": "Visitors in"
+      },
+      "visitors_out": {
+        "name": "Visitors out"
+      },
+      "capacity_status": {
+        "name": "Capacity status"
+      },
+      "year_visitors": {
+        "name": "Year visitors"
+      },
+      "response_timestamp": {
+        "name": "Response timestamp"
+      },
+      "total_records": {
+        "name": "Total records"
+      },
+      "total_filtered_records": {
+        "name": "Total filtered records"
+      }
+    }
+  }
+}
