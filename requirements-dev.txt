@@ -3,3 +3,5 @@ pytest-homeassistant==2026.11.1
 pytest-cov==7.1.0
 ruff==0.17.5
 mypy==2.4.1
+yamllint==1.38.0
+actionlint=1.7.12
