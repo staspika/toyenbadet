@@ -37,3 +37,6 @@ jobs:
 
       - name: Pytest
         run: pytest -q
+
+      - name: YAML lint
+        run: yamllint .
