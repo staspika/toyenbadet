@@ -128,3 +128,41 @@ async def test_optional_fields_unknown(
     ):
         entity_id = registry.async_get_entity_id("sensor", DOMAIN, f"12_{key}")
         assert hass.states.get(entity_id).state == STATE_UNKNOWN
+
+
+async def test_capacity_status_transitions(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, payload: dict[str, object]
+) -> None:
+    """Keep an enum sensor usable through unknown states and recovery."""
+    aioclient_mock.get(URL, json=payload)
+    entry = MockConfigEntry(
+        domain=DOMAIN, unique_id=SHOP_NO, data={}, title="Tøyenbadet"
+    )
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    registry = er.async_get(hass)
+    status_id = registry.async_get_entity_id("sensor", DOMAIN, "12_capacityStatus")
+    occupancy_id = registry.async_get_entity_id("sensor", DOMAIN, "12_occupancy")
+    assert status_id is not None
+    assert occupancy_id is not None
+    state = hass.states.get(status_id)
+    assert state.state == "good"
+    assert state.attributes["device_class"] == "enum"
+    assert state.attributes["options"] == ["good", "near", "over"]
+
+    for status, expected in (
+        ("near", "near"),
+        ("over", "over"),
+        ("unexpected", STATE_UNKNOWN),
+        (None, STATE_UNKNOWN),
+        ([], STATE_UNKNOWN),
+        ("good", "good"),
+    ):
+        aioclient_mock.clear_requests()
+        aioclient_mock.get(URL, json={**payload, "capacityStatus": status})
+        await entry.runtime_data.async_refresh()
+        await hass.async_block_till_done()
+        assert hass.states.get(status_id).state == expected
+        assert hass.states.get(occupancy_id).state == "555"
+        assert entry.runtime_data.last_update_success

@@ -26,7 +26,12 @@
         "name": "Visitors out"
       },
       "capacity_status": {
-        "name": "Capacity status"
+        "name": "Capacity status",
+        "state": {
+          "good": "Space available",
+          "near": "Near capacity",
+          "over": "Over capacity"
+        }
       },
       "year_visitors": {
         "name": "Year visitors"

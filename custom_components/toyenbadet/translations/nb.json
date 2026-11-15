@@ -26,7 +26,12 @@
         "name": "Besøkende ut"
       },
       "capacity_status": {
-        "name": "Kapasitetsstatus"
+        "name": "Kapasitetsstatus",
+        "state": {
+          "good": "God plass",
+          "near": "Nesten fullt",
+          "over": "Overfylt"
+        }
       },
       "year_visitors": {
         "name": "Besøkende i år"

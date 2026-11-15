@@ -1,0 +1,49 @@
+# Replace entity IDs if your installation uses different names.
+type: vertical-stack
+cards:
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: sensor.toyenbadet_capacity_status
+        state: "good"
+    card:
+      type: tile
+      entity: sensor.toyenbadet_occupancy
+      name: Tøyenbadet
+      color: green
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: sensor.toyenbadet_capacity_status
+        state: "near"
+    card:
+      type: tile
+      entity: sensor.toyenbadet_occupancy
+      name: Tøyenbadet
+      color: amber
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: sensor.toyenbadet_capacity_status
+        state: "over"
+    card:
+      type: tile
+      entity: sensor.toyenbadet_occupancy
+      name: Tøyenbadet
+      color: red
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: sensor.toyenbadet_capacity_status
+        state_not: "good"
+      - condition: state
+        entity: sensor.toyenbadet_capacity_status
+        state_not: "near"
+      - condition: state
+        entity: sensor.toyenbadet_capacity_status
+        state_not: "over"
+    card:
+      type: tile
+      entity: sensor.toyenbadet_occupancy
+      name: Tøyenbadet
+      color: grey
