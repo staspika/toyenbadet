@@ -4,9 +4,10 @@ set -euo pipefail
 
 usage() {
     cat <<'HELP'
-Usage: dev/ha/run [start|restart|recreate|logs|status|stop]
+Usage: dev/ha/run [start|setup|restart|recreate|logs|status|stop]
 
   start     Start HA and wait for its web server (default)
+  setup     Create a test login and add Tøyenbadet (once per fresh volume)
   restart   Load changed integration Python files
   recreate  Load changed YAML, Compose settings, or image
   logs      Follow HA logs; Ctrl+C stops following
@@ -25,7 +26,7 @@ fi
 command_name=${1:-start}
 case "$command_name" in
     -h|--help|help) usage; exit 0 ;;
-    start|restart|recreate|logs|status|stop) ;;
+    start|setup|restart|recreate|logs|status|stop) ;;
     *) usage >&2; exit 2 ;;
 esac
 
@@ -45,6 +46,10 @@ fi
 compose=(docker compose -f "$script_dir/compose.yaml")
 case "$command_name" in
     start) "${compose[@]}" up -d --wait --wait-timeout 300 ;;
+    setup)
+        "${compose[@]}" up -d --wait --wait-timeout 300
+        "${compose[@]}" exec -T homeassistant python3 - < "$script_dir/setup.py"
+        ;;
     restart) "${compose[@]}" restart homeassistant ;;
     recreate) "${compose[@]}" up -d --force-recreate --wait --wait-timeout 300 ;;
     logs) exec "${compose[@]}" logs -f homeassistant ;;

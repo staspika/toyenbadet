@@ -12,10 +12,29 @@ user cannot access Docker):
 ./dev/ha/run start
 ```
 
-Open [the test dashboard](http://127.0.0.1:8124/lovelace/toyenbadet). On the first
-run, create a local test account, then go to **Settings → Devices & services →
-Add integration → Tøyenbadet**. Use English during setup for the example entity
-IDs, or adjust `dev/ha/ui-lovelace.yaml` to the IDs assigned by HA.
+For automatic first-time setup:
+
+```sh
+./dev/ha/run setup
+```
+
+Use `sudo` if needed. This starts HA, creates a local `tester` account with a
+random password, completes onboarding, and adds Tøyenbadet. It prints the login
+and dashboard URL. Credentials are saved with owner-only permissions inside the
+Docker volume at `/config/.toyenbadet-dev-login.json`, never in the repo. Running
+`setup` again reuses that login and does not add a duplicate integration. If the
+public API is unavailable, fix connectivity and rerun `setup` to finish.
+
+Open [the test dashboard](http://127.0.0.1:8124/lovelace/toyenbadet). You can also
+set up manually: create a local test account, then go to **Settings → Devices &
+services → Add integration → Tøyenbadet**. Use English during setup for the
+example entity IDs, or adjust `dev/ha/ui-lovelace.yaml` to the IDs assigned by HA.
+The helper leaves manually created accounts and their configuration untouched.
+Your current manually configured instance therefore needs only `start`.
+
+`start` never performs onboarding. The optional `setup` helper uses HA's local
+onboarding APIs, so review it when updating the pinned HA version. To test the
+integration's setup UI itself, use the manual route on a separate fresh volume.
 
 HA may offer or create its usual onboarding integrations (such as weather).
 These aren't needed for this test; skip them where offered, or remove them from
