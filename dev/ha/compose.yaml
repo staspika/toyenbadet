@@ -1,0 +1,44 @@
+name: toyenbadet-dev
+
+services:
+  homeassistant:
+    # Keep aligned with the HA release pinned by requirements-dev.txt.
+    image: ghcr.io/home-assistant/home-assistant:2026.11.1
+    ports:
+      - "127.0.0.1:${HA_TEST_PORT:-8124}:8123"
+    environment:
+      TZ: Europe/Oslo
+    stop_grace_period: 1m
+    volumes:
+      - ha-config:/config
+      - type: bind
+        source: ../../custom_components/toyenbadet
+        target: /config/custom_components/toyenbadet
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./configuration.yaml
+        target: /config/configuration.yaml
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./ui-lovelace.yaml
+        target: /config/ui-lovelace.yaml
+        read_only: true
+        bind:
+          create_host_path: false
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8123/', timeout=5).close()"
+      interval: 10s
+      timeout: 10s
+      start_period: 60s
+      retries: 12
+
+volumes:
+  ha-config:

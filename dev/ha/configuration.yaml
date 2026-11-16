@@ -1,0 +1,23 @@
+homeassistant:
+  name: Tøyenbadet development
+  latitude: 59.923
+  longitude: 10.777
+  elevation: 30
+  unit_system: metric
+  time_zone: Europe/Oslo
+
+# Load the UI and its dependencies without default_config's discovery services.
+frontend:
+config:
+my:
+
+http:
+  server_port: 8123
+
+lovelace:
+  mode: yaml
+
+logger:
+  default: warning
+  logs:
+    custom_components.toyenbadet: debug
