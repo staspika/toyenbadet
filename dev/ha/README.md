@@ -5,10 +5,11 @@ this checkout. You need Docker with the Compose plugin (`docker compose version`
 The HA image is pinned to the release used by `requirements-dev.txt`; update the
 two together when changing the supported test version.
 
-Run these commands from the repository root:
+Run the helper from the repository root (use `sudo ./dev/ha/run start` if your
+user cannot access Docker):
 
 ```sh
-docker compose -f dev/ha/compose.yaml up -d --wait --wait-timeout 300
+./dev/ha/run start
 ```
 
 Open [the test dashboard](http://127.0.0.1:8124/lovelace/toyenbadet). On the first
@@ -32,7 +33,7 @@ The integration directory is mounted read-only from this checkout. After Python
 changes, restart HA to load them:
 
 ```sh
-docker compose -f dev/ha/compose.yaml restart homeassistant
+./dev/ha/run restart
 ```
 
 HA configuration and dashboard files are mounted read-only too; edit them in
@@ -40,7 +41,7 @@ the repo, not in HA's UI. After changing these YAML files, recreate the containe
 to pick up file replacements made by your editor, then refresh the browser:
 
 ```sh
-docker compose -f dev/ha/compose.yaml up -d --force-recreate --wait --wait-timeout 300
+./dev/ha/run recreate
 ```
 
 Use the same command after changing Compose settings or the pinned image.
@@ -49,8 +50,8 @@ Recreating the container preserves the named volume and your login.
 View status and logs:
 
 ```sh
-docker compose -f dev/ha/compose.yaml ps
-docker compose -f dev/ha/compose.yaml logs -f homeassistant
+./dev/ha/run status
+./dev/ha/run logs
 ```
 
 The health check verifies the web server responds. Check the Tøyenbadet device
@@ -59,7 +60,7 @@ and logs as well to verify that the integration has loaded and fetched data.
 ## Stop and start again
 
 ```sh
-docker compose -f dev/ha/compose.yaml down
+./dev/ha/run stop
 ```
 
 The named volume `toyenbadet-dev_ha-config` keeps your account, integration setup,
@@ -70,16 +71,24 @@ it. To deliberately discard this test instance's data and repeat onboarding:
 docker compose -f dev/ha/compose.yaml down --volumes
 ```
 
-## Another instance or an occupied port
+## Remember local settings
 
-If the temporary HA server or another service is using port 8124, choose another
-port. To test two worktrees at once, also give each one its own project name:
+Copy the example once:
 
 ```sh
-HA_TEST_PORT=8125 docker compose -p toyenbadet-feature -f dev/ha/compose.yaml up -d --wait --wait-timeout 300
+cp dev/ha/.env.example dev/ha/.env
 ```
 
-Open `http://127.0.0.1:8125/lovelace/toyenbadet` for that instance. Use the same
-`HA_TEST_PORT` and `-p` arguments for its subsequent commands. A different project
-name creates a separate volume and login; the default name reuses the default
-instance's data.
+Edit `dev/ha/.env` to choose a port, such as `HA_TEST_PORT=8125` if the temporary
+server still uses 8124. Keep `COMPOSE_PROJECT_NAME=toyenbadet-dev` to reuse the
+existing Docker instance and login. The file is ignored by Git, and the script
+loads it consistently even when invoked from another directory or with `sudo`.
+It prints the dashboard URL after starting or restarting HA.
+
+To run two worktrees at once, set a different port **and** project name in each
+checkout's `.env`. A different project name creates a separate volume and login.
+The helper always mounts the integration from the checkout containing the script.
+
+Run `./dev/ha/run --help` for the available commands. `restart` returns after the
+container restarts; the UI can take a little longer to become available. `start`
+and `recreate` wait for the web server health check.
