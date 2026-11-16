@@ -1,0 +1,16 @@
+# Replace the example entity IDs with those assigned in your installation.
+type: vertical-stack
+cards:
+  - type: tile
+    entity: binary_sensor.toyenbadet_ticket_sales_open
+    name: Ticket sales
+  - type: entities
+    entities:
+      - sensor.toyenbadet_occupancy
+      - sensor.toyenbadet_next_ticket_sales_opening
+      - sensor.toyenbadet_next_ticket_sales_closing
+  - type: calendar
+    title: Ticket-sales opening hours
+    initial_view: listWeek
+    entities:
+      - calendar.toyenbadet_ticket_sales_opening_hours
