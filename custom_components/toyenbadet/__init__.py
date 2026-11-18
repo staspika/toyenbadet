@@ -4,14 +4,17 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
 from .coordinator import ToyenbadetConfigEntry, ToyenbadetCoordinator
+from .hours_coordinator import OpeningHoursCoordinator
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.CALENDAR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ToyenbadetConfigEntry) -> bool:
     """Validate the connection and set up the sensors."""
     coordinator = ToyenbadetCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
+    coordinator.hours = OpeningHoursCoordinator(hass, entry)
+    await coordinator.hours.async_refresh()
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

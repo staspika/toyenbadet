@@ -1,5 +1,7 @@
 """All monitor fields grouped under one registered device."""
 
+from datetime import datetime
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -11,10 +13,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
 from .const import CAPACITY_STATUSES, DOMAIN, SHOP_NO, URL
 from .coordinator import ToyenbadetConfigEntry, ToyenbadetCoordinator
 from .data import MonitorValue
+from .hours_entity import OpeningHoursEntity
 
 # The coordinator fetches data once for all read-only entities.
 PARALLEL_UPDATES = 0
@@ -78,6 +82,10 @@ async def async_setup_entry(
 ) -> None:
     """Add the monitor sensors using the entry's shared coordinator."""
     async_add_entities(ToyenbadetSensor(entry.runtime_data, desc) for desc in SENSORS)
+    async_add_entities(
+        OpeningTimeSensor(entry.runtime_data.hours, key)
+        for key in ("next_opening", "next_closing")
+    )
 
 
 class ToyenbadetSensor(CoordinatorEntity[ToyenbadetCoordinator], SensorEntity):
@@ -107,3 +115,29 @@ class ToyenbadetSensor(CoordinatorEntity[ToyenbadetCoordinator], SensorEntity):
     def native_value(self) -> MonitorValue:
         """Return the validated value without performing network I/O."""
         return self.coordinator.data[self.entity_description.key]
+
+
+class OpeningTimeSensor(OpeningHoursEntity, SensorEntity):
+    """Expose the next strictly future opening or closing timestamp."""
+
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    @property
+    def native_value(self) -> datetime | None:
+        """Return unknown when no future boundary has been published."""
+        now = dt_util.utcnow()
+        return next(
+            (
+                boundary
+                for interval in self.coordinator.data.intervals
+                if (
+                    boundary := (
+                        interval.start
+                        if self.translation_key == "next_opening"
+                        else interval.end
+                    )
+                )
+                > now
+            ),
+            None,
+        )

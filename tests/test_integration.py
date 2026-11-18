@@ -27,11 +27,11 @@ async def test_setup_recovery_unload_reload(
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     assert entry.state is ConfigEntryState.LOADED
-    assert aioclient_mock.call_count == 1
+    assert aioclient_mock.call_count == 2
 
     registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(registry, entry.entry_id)
-    assert len(entities) == 8
+    assert len(entities) == 12
     assert {entity.unique_id for entity in entities} == {
         f"12_{key}"
         for key in (
@@ -43,6 +43,10 @@ async def test_setup_recovery_unload_reload(
             "datelong",
             "totalRecords",
             "totalFilteredRecords",
+            "opening_hours",
+            "ticket_sales_open",
+            "next_opening",
+            "next_closing",
         )
     }
     occupancy_id = registry.async_get_entity_id("sensor", DOMAIN, "12_occupancy")
@@ -89,7 +93,7 @@ async def test_setup_recovery_unload_reload(
     assert (
         registry.async_get_entity_id("sensor", DOMAIN, "12_occupancy") == occupancy_id
     )
-    assert len(er.async_entries_for_config_entry(registry, entry.entry_id)) == 8
+    assert len(er.async_entries_for_config_entry(registry, entry.entry_id)) == 12
     assert hass.states.get(occupancy_id).state == "558"
 
 

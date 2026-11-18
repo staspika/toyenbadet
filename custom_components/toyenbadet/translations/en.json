@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "Tøyenbadet",
-        "description": "Add the Tøyenbadet visitor monitor (location 12). All sensors share one request per minute. No credentials are required."
+        "description": "Add visitor counts and ticket-sales opening hours for Tøyenbadet. Counts refresh every minute; opening hours every hour. No credentials are required."
       }
     },
     "error": {
@@ -44,6 +44,22 @@
       },
       "total_filtered_records": {
         "name": "Total filtered records"
+      },
+      "next_opening": {
+        "name": "Next ticket-sales opening"
+      },
+      "next_closing": {
+        "name": "Next ticket-sales closing"
+      }
+    },
+    "calendar": {
+      "opening_hours": {
+        "name": "Ticket-sales opening hours"
+      }
+    },
+    "binary_sensor": {
+      "ticket_sales_open": {
+        "name": "Ticket sales open"
       }
     }
   }
